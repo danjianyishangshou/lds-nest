@@ -1,4 +1,8 @@
-import { VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+  VersioningType,
+  VERSION_NEUTRAL,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -8,16 +12,13 @@ import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './common/exceptions/base.exception.filter';
 import { HttpExceptionFilter } from './common/exceptions/http.exception.filter';
+import { generateDocument } from './doc';
 
 declare const module: any;
 /**
  * 启动NestJS应用并监听3000端口
  */
 async function bootstrap() {
-  if (module.hot) {
-    module.hot.accept();
-    module.hot.dispose(() => app.close());
-  }
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
@@ -28,12 +29,19 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
   // 接口版本化管理
   app.enableVersioning({
-    prefix: '/api',
-    defaultVersion: [VERSION_NEUTRAL, '1', '2'],
+    // defaultVersion: [VERSION_NEUTRAL, 'api'],
     // defaultVersion: '1',
     type: VersioningType.URI,
   });
-
+  // 启动全局字段校验，保证请求接口字段校验正确。
+  app.useGlobalPipes(new ValidationPipe());
+  // 创建文档
+  generateDocument(app);
+  // 添加热更新
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
   await app.listen(3000);
 }
 

@@ -6,15 +6,14 @@ import {
   Patch,
   Param,
   Delete,
-  Version,
-  VERSION_NEUTRAL,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { BusinessException } from 'src/common/exceptions/business.exception';
+import { ApiOperation, ApiParam, ApiTags, ApiResponse,ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('user')
+@ApiTags('用户')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -24,23 +23,18 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '获取用户信息',
+    description: '请求该接口需要amdin权限',
+  })
+  @ApiResponse({ status: 403, description: '自定义返回信息' })
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get('findBusinessError')
-  @Version([VERSION_NEUTRAL, '1'])
-  findBusinessError() {
-    const a: any = {};
-    try {
-      console.log(a.b.c);
-    } catch (error) {
-      throw new BusinessException('你这个参数错了');
-    }
-    return this.userService.findAll();
-  }
-
   @Get(':id')
+  @ApiBearerAuth()
+  @ApiParam({ name: 'id', description: '用户id', required: true })
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
   }
