@@ -5,6 +5,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 /**
  * 启动NestJS应用并监听3000端口
@@ -14,6 +15,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+  // 统一响应体格式
+  app.useGlobalInterceptors(new TransformInterceptor());
   // 接口版本化管理
   app.enableVersioning({
     prefix: '/api',
