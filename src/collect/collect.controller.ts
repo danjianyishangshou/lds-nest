@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CollectService } from './collect.service';
 import { CreateCollectDto } from './dto/create-collect.dto';
 import { UpdateCollectDto } from './dto/update-collect.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('collect')
+@ApiTags('收藏')
 export class CollectController {
   constructor(private readonly collectService: CollectService) {}
 

@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PoetryService } from './poetry.service';
 import { CreatePoetryDto } from './dto/create-poetry.dto';
 import { UpdatePoetryDto } from './dto/update-poetry.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('poetry')
+@ApiTags('诗歌')
 export class PoetryController {
   constructor(private readonly poetryService: PoetryService) {}
 

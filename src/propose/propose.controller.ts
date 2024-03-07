@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ProposeService } from './propose.service';
 import { CreateProposeDto } from './dto/create-propose.dto';
 import { UpdateProposeDto } from './dto/update-propose.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('propose')
+@ApiTags('推荐')
 export class ProposeController {
   constructor(private readonly proposeService: ProposeService) {}
 
