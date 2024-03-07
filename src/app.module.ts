@@ -3,9 +3,18 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
+import { getConfig } from '../utils';
 
 @Module({
-  imports: [UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      ignoreEnvFile: true,
+      isGlobal: true,
+      load: [getConfig],
+    }),
+    UserModule,
+  ],
   controllers: [AppController, UserController],
   providers: [AppService],
 })
